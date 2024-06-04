@@ -13,6 +13,7 @@
 # limitations under the License.
 import importlib
 from typing import Any, Tuple, List, Callable, Optional
+from functools import partial
 
 deepspeed_is_installed = importlib.util.find_spec("deepspeed") is not None
 if(deepspeed_is_installed):
@@ -34,7 +35,7 @@ def get_checkpoint_fn():
     if(deepspeed_is_configured):
         checkpoint = deepspeed.checkpointing.checkpoint
     else:
-        checkpoint = torch.utils.checkpoint.checkpoint
+        checkpoint = partial(torch.utils.checkpoint.checkpoint, use_reentrant=False)
 
     return checkpoint
 
